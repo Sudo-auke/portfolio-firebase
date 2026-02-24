@@ -1,16 +1,24 @@
 import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import sentinelLogo from "./assets/Microsoft_Sentinel.png";
+import schoolLogo from "./assets/logo-ecole-mns.png";
+import az500Badge from "./assets/azure-security-engineer-associate.png";
+import sc200Badge from "./assets/security-operations-analyst-associate.png";
+import airCloudLogo from "./assets/aircloud-removebg-preview.png";
+import ineosLogo from "./assets/ineosauto-removebg-preview.png";
+import arcelorLogo from "./assets/arcelormittal-removebg-preview.png";
+import cvPdf from "./assets/CV_2025-11-23_Alexandre_Garing.pdf";
 
 function Section({ title, subtitle, children, className = "" }) {
   return (
     <section
       className={
-        "rounded-3xl border border-white/10 bg-white/[0.025] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors duration-300 hover:border-white/15 sm:p-7 " +
+        "rounded-3xl border border-white/10 bg-white/[0.025] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors duration-300 hover:border-white/15 sm:p-8 " +
         className
       }
     >
-      <div className="mb-5 space-y-1">
+      <div className="mb-6 space-y-1.5">
         <h2 className="text-lg font-semibold tracking-tight text-white sm:text-xl">{title}</h2>
         {subtitle && <p className="text-sm text-white/60">{subtitle}</p>}
       </div>
@@ -63,6 +71,33 @@ function ExpCard({ title, when, where, bullets }) {
           </li>
         ))}
       </ul>
+    </article>
+  );
+}
+
+function CertificationCard({ image, title, description, verificationLink }) {
+  return (
+    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/45 hover:shadow-[0_0_40px_rgba(138,180,255,0.18)] sm:p-7">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+        <img
+          src={image}
+          alt={`${title} certification badge`}
+          className="h-16 w-16 shrink-0 rounded-xl object-contain sm:h-20 sm:w-20 lg:h-24 lg:w-24"
+          loading="lazy"
+        />
+        <div>
+          <h3 className="text-base font-semibold text-white sm:text-lg">{title}</h3>
+          <p className="mt-1.5 text-sm text-white/70">{description}</p>
+          <a
+            href={verificationLink}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex rounded-full border border-blue-200/55 bg-blue-200/20 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-100/80 hover:bg-blue-100/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/60"
+          >
+            Verify credential
+          </a>
+        </div>
+      </div>
     </article>
   );
 }
@@ -128,6 +163,29 @@ const experiences = [
   },
 ];
 
+const certifications = [
+  {
+    image: sc200Badge,
+    title: "SC-200 — Microsoft Security Operations Analyst",
+    description: "Threat detection, incident response and investigation across Microsoft security tooling.",
+    verificationLink:
+      "https://learn.microsoft.com/api/credentials/share/fr-fr/agaring/64CCC64B28CE2034?sharingId=4E3CE5C8334C64D1",
+  },
+  {
+    image: az500Badge,
+    title: "AZ-500 — Microsoft Azure Security Engineer",
+    description: "Cloud security architecture, identity protection and governance for Azure workloads.",
+    verificationLink:
+      "https://learn.microsoft.com/api/credentials/share/fr-fr/agaring/766EB8CD7C70FD46?sharingId=4E3CE5C8334C64D1",
+  },
+];
+
+const companyLogos = [
+  { src: airCloudLogo, alt: "AirCloud logo" },
+  { src: ineosLogo, alt: "INEOS Automotive logo" },
+  { src: arcelorLogo, alt: "ArcelorMittal logo" },
+];
+
 export default function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -176,8 +234,8 @@ export default function App() {
         <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-slate-200/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
+      <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+        <header className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs uppercase tracking-[0.2em] text-blue-100/70">Portfolio · Cloud Security</p>
@@ -192,6 +250,10 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
+              <div className="mt-4 flex items-center">
+                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="h-8 w-auto opacity-80 sm:h-9 lg:h-10" loading="lazy" />
+              </div>
+
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Pill>Microsoft Sentinel</Pill>
                 <Pill>Defender XDR</Pill>
@@ -203,6 +265,7 @@ export default function App() {
             </div>
 
             <nav className="flex flex-wrap gap-2 self-start lg:justify-end">
+              <LinkButton href={cvPdf}>Download CV (PDF)</LinkButton>
               <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
               <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
               <LinkButton href="#contact" primary>
@@ -212,7 +275,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="mt-6 grid gap-4 lg:grid-cols-12">
+        <main className="grid gap-6 py-24 lg:grid-cols-12">
           <Section title="Profil" className="lg:col-span-5">
             <p className="text-sm leading-relaxed text-white/80 sm:text-[15px]">
               Spécialisé en sécurité cloud Microsoft, SOC operations et engineering de détection : Sentinel SIEM, Defender XDR,
@@ -234,6 +297,17 @@ export default function App() {
           </Section>
 
           <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
+            <div className="mb-6 flex flex-wrap items-center gap-6 sm:gap-8">
+              {companyLogos.map((logo) => (
+                <img
+                  key={logo.alt}
+                  src={logo.src}
+                  alt={logo.alt}
+                  loading="lazy"
+                  className="h-8 w-auto opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:h-10"
+                />
+              ))}
+            </div>
             <div className="grid gap-3 md:grid-cols-2">
               {experiences.map((experience) => (
                 <ExpCard key={experience.title} {...experience} />
@@ -241,7 +315,7 @@ export default function App() {
             </div>
           </Section>
 
-          <Section title="Formations" className="lg:col-span-6">
+          <Section title="Formations" subtitle="Parcours académique" className="lg:col-span-6">
             <ul className="space-y-3 text-sm text-white/80">
               <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
                 Mastère Expert ASR &amp; Sécurité Informatique — Metz Numeric School (oct. 2025 → sept. 2027)
@@ -253,22 +327,21 @@ export default function App() {
                 Licence Pro AQI &amp; BTS Contrôle industriel / régulation — Metz (2013 → 2016)
               </li>
             </ul>
+            <div className="mt-4 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3">
+              <img src={schoolLogo} alt="Metz Numeric School logo" className="h-9 w-9 rounded-md object-contain opacity-90" loading="lazy" />
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-white/50">Education</p>
+                <p className="text-sm text-white/80">Metz Numeric School — Cybersecurity track</p>
+              </div>
+            </div>
           </Section>
 
-          <Section title="Certifications" className="lg:col-span-6">
-            <ul className="grid gap-2 text-sm text-white/80 sm:grid-cols-2">
-              {[
-                "AZ-500 — Microsoft Azure Security Engineer",
-                "SC-200 — Microsoft Security Operations Analyst",
-                "HTB CPTS (en cours)",
-                "AWS Academy Cloud Foundations",
-                "MOOC ANSSI / RGPD (CNIL)",
-              ].map((item) => (
-                <li key={item} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                  {item}
-                </li>
+          <Section title="Certifications" subtitle="Validated Microsoft credentials" className="lg:col-span-6">
+            <div className="grid gap-4">
+              {certifications.map((certification) => (
+                <CertificationCard key={certification.title} {...certification} />
               ))}
-            </ul>
+            </div>
           </Section>
 
           <Section title="Langues & intérêts" className="lg:col-span-5">
@@ -278,7 +351,7 @@ export default function App() {
             </ul>
           </Section>
 
-          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7" >
+          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7">
             <div id="contact">
               <form onSubmit={onSubmit} className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -339,7 +412,7 @@ export default function App() {
           </Section>
         </main>
 
-        <footer className="mt-8 text-center text-xs text-white/45">© {year} Alexandre Garing</footer>
+        <footer className="text-center text-xs text-white/45">© {year} Alexandre Garing</footer>
       </div>
     </div>
   );
