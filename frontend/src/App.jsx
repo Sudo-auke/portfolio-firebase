@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import microsoftLogo from "./assets/Logo-microsoft.png";
 import sentinelLogo from "./assets/Microsoft_Sentinel.png";
 import schoolLogo from "./assets/logo-ecole-mns.png";
 import az500Badge from "./assets/azure-security-engineer-associate.png";
@@ -254,11 +253,8 @@ export default function App() {
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
               <div className="mt-4 flex items-center gap-4">
-                <img src={microsoftLogo} alt="Microsoft logo" className="h-5 w-auto opacity-80" loading="lazy" />
-                <span className="text-white/35">•</span>
-                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="h-8 w-auto opacity-80 lg:h-10" loading="lazy" />
-              </div>
-
+                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="mt-4 h-9 w-auto opacity-90 lg:h-11" loading="lazy" />
+                
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Pill>Microsoft Sentinel</Pill>
                 <Pill>Defender XDR</Pill>
