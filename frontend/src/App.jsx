@@ -264,7 +264,6 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
-<<<<<<< HEAD
               <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5 sm:gap-3 sm:px-4">
                 {toolingLogos.map((tool) => (
                   <div
@@ -279,11 +278,6 @@ export default function App() {
                     />
                   </div>
                 ))}
-=======
-              <div className="mt-4 flex items-center gap-4">
-                 <span className="text-white/35">•</span>
-                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="h-8 w-auto opacity-80 lg:h-10" loading="lazy" />
->>>>>>> 9b1c11a (Revert "Update App.jsx remove windows logo")
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2.5">
