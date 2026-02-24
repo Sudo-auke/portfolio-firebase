@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import microsoftLogo from "./assets/Logo-microsoft.png";
 import sentinelLogo from "./assets/Microsoft_Sentinel.png";
 import entraIdLogo from "./assets/Microsoft_Entra_ID_color_icon.svg.png";
 import defenderLogo from "./assets/Microsoft_Defender_2020_Fluent_Design_icon.svg.png";
@@ -282,8 +281,7 @@ export default function App() {
                 ))}
 =======
               <div className="mt-4 flex items-center gap-4">
-                <img src={microsoftLogo} alt="Microsoft logo" className="h-5 w-auto opacity-80" loading="lazy" />
-                <span className="text-white/35">•</span>
+                 <span className="text-white/35">•</span>
                 <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="h-8 w-auto opacity-80 lg:h-10" loading="lazy" />
 >>>>>>> 9b1c11a (Revert "Update App.jsx remove windows logo")
               </div>
