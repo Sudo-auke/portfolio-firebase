@@ -122,6 +122,7 @@ const toolingLogos = [
   { name: "Microsoft Entra ID", logo: getAsset("Microsoft_Entra_ID_color_icon.svg.png") },
   { name: "Microsoft Azure", logo: getAsset("Microsoft-Azure.png") },
   { name: "Microsoft Defender", logo: getAsset("Microsoft_Defender_2020_Fluent_Design_icon.svg.png") },
+  { name: "AZ-500 Azure Security Engineer", logo: az500Badge, isBadge: true },
 ]
   .filter((tool) => Boolean(tool.logo))
   .filter((tool, index, array) => array.findIndex((item) => item.logo === tool.logo) === index);
@@ -246,14 +247,14 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0b0d10] text-white/90">
+    <div className="relative min-h-screen overflow-hidden bg-[#0b0d10] text-white/90 antialiased">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-28 left-[8%] h-72 w-72 rounded-full bg-blue-300/10 blur-3xl" />
         <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-slate-200/5 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
+        <header className="rounded-3xl border border-blue-100/15 bg-gradient-to-b from-white/[0.09] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] ring-1 ring-inset ring-blue-100/10 sm:p-10">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs uppercase tracking-[0.2em] text-blue-100/70">Portfolio · Cloud Security</p>
@@ -268,16 +269,16 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.045] px-3 py-2.5 sm:gap-3 sm:px-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-blue-100/15 bg-white/[0.045] px-3 py-2.5 sm:gap-3 sm:px-4">
                 {toolingLogos.map((tool) => (
                   <div
                     key={tool.name}
-                    className="group inline-flex items-center rounded-xl border border-white/20 bg-white/[0.09] px-3 py-2 transition-all duration-300 hover:scale-[1.02] hover:border-blue-100/55 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_18px_rgba(140,185,255,0.24)] sm:px-3.5"
+                    className="group inline-flex items-center rounded-xl border border-white/20 bg-white/[0.09] px-3 py-2 transition-all duration-300 hover:scale-[1.02] hover:border-blue-100/60 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_18px_rgba(140,185,255,0.24)] sm:px-3.5"
                   >
                     <img
                       src={tool.logo}
                       alt={`${tool.name} logo`}
-                      className="h-7 w-auto object-contain sm:h-8 lg:h-10"
+                      className={`w-auto object-contain ${tool.isBadge ? "h-8 sm:h-9 lg:h-10" : "h-7 sm:h-8 lg:h-10"}`}
                       loading="lazy"
                     />
                   </div>
