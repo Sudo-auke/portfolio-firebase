@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import microsoftLogo from "./assets/Logo-microsoft.png";
 import sentinelLogo from "./assets/Microsoft_Sentinel.png";
 import schoolLogo from "./assets/logo-ecole-mns.png";
 import az500Badge from "./assets/azure-security-engineer-associate.png";
 import sc200Badge from "./assets/security-operations-analyst-associate.png";
+import aircloudLogo from "./assets/aircloud-removebg-preview.png";
+import arcelorMittalLogo from "./assets/arcelormittal-removebg-preview.png";
+import ineosLogo from "./assets/ineosauto-removebg-preview.png";
 import cvPdf from "./assets/CV_2025-11-23_Alexandre_Garing.pdf";
 
 function Section({ title, subtitle, children, className = "" }) {
@@ -75,21 +77,40 @@ function ExpCard({ title, when, where, bullets }) {
 
 function CertificationCard({ image, title, description, verificationLink }) {
   return (
-    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/40 hover:shadow-[0_0_35px_rgba(138,180,255,0.18)]">
-      <img src={image} alt={`${title} certification badge`} className="h-16 w-16 rounded-lg object-cover" loading="lazy" />
-      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
-      <p className="mt-1 text-sm text-white/70">{description}</p>
-      <a
-        href={verificationLink}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-4 inline-flex rounded-full border border-blue-200/35 bg-blue-300/10 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-200/60 hover:bg-blue-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/45"
-      >
-        Verify credential
-      </a>
+    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-100/45 hover:shadow-[0_0_36px_rgba(148,179,255,0.18)]">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-7">
+        <div className="flex justify-center sm:justify-start">
+          <img
+            src={image}
+            alt={`${title} certification badge`}
+            className="h-20 w-auto object-contain sm:h-24 lg:h-28"
+            loading="lazy"
+          />
+        </div>
+
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-white">{title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-white/70">{description}</p>
+          <div className="my-4 h-px w-full bg-white/10" />
+          <a
+            href={verificationLink}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex rounded-full border border-blue-100/60 bg-blue-200/20 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-100/80 hover:bg-blue-200/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-100/45"
+          >
+            Verify credential
+          </a>
+        </div>
+      </div>
     </article>
   );
 }
+
+const experienceCompanies = [
+  { name: "AirCloud", logo: aircloudLogo },
+  { name: "INEOS Automotive", logo: ineosLogo },
+  { name: "ArcelorMittal", logo: arcelorMittalLogo },
+];
 
 const skillTags = [
   "Microsoft Sentinel",
@@ -217,7 +238,7 @@ export default function App() {
         <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-slate-200/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
@@ -233,10 +254,14 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
-              <div className="mt-4 flex items-center gap-3">
-                <img src={microsoftLogo} alt="Microsoft logo" className="h-5 w-auto opacity-80" loading="lazy" />
-                <span className="text-white/35">•</span>
-                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="h-5 w-auto opacity-80" loading="lazy" />
+              <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.02] px-4 py-2">
+                <img
+                  src={sentinelLogo}
+                  alt="Microsoft Sentinel logo"
+                  className="h-8 w-auto object-contain opacity-80 sm:h-9 lg:h-11"
+                  loading="lazy"
+                />
+                <span className="text-xs font-medium tracking-wide text-white/80">Microsoft Sentinel</span>
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2.5">
@@ -260,7 +285,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="mt-8 grid gap-5 lg:grid-cols-12">
+        <main className="mt-12 grid gap-6 lg:grid-cols-12">
           <Section title="Profil" className="lg:col-span-5">
             <p className="text-sm leading-relaxed text-white/80 sm:text-[15px]">
               Spécialisé en sécurité cloud Microsoft, SOC operations et engineering de détection : Sentinel SIEM, Defender XDR,
@@ -282,6 +307,21 @@ export default function App() {
           </Section>
 
           <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
+            <div className="mb-6 flex flex-wrap items-center gap-4 sm:gap-5">
+              {experienceCompanies.map((company) => (
+                <div
+                  key={company.name}
+                  className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 transition-all duration-300 hover:border-blue-100/35 hover:opacity-100 hover:shadow-[0_0_24px_rgba(147,197,253,0.15)]"
+                >
+                  <img
+                    src={company.logo}
+                    alt={`${company.name} logo`}
+                    className="h-10 w-auto object-contain opacity-90 transition-opacity duration-300 sm:h-12"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
             <div className="grid gap-3 md:grid-cols-2">
               {experiences.map((experience) => (
                 <ExpCard key={experience.title} {...experience} />
@@ -310,11 +350,7 @@ export default function App() {
             </div>
           </Section>
 
-          <Section
-            title="Certifications"
-            subtitle="Validated Microsoft credentials"
-            className="lg:col-span-6"
-          >
+          <Section title="Certifications" subtitle="Validated Microsoft credentials" className="lg:col-span-6">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
               {certifications.map((certification) => (
                 <CertificationCard key={certification.title} {...certification} />
@@ -329,7 +365,7 @@ export default function App() {
             </ul>
           </Section>
 
-          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7" >
+          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7">
             <div id="contact">
               <form onSubmit={onSubmit} className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
