@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import schoolLogo from "./assets/logo-ecole-mns.png";
@@ -15,17 +15,56 @@ function getAsset(fileName) {
   return assetModules[`./assets/${fileName}`] ?? null;
 }
 
-function Section({ title, subtitle, children, className = "" }) {
+function Icon({ children, className = "" }) {
   return (
-    <section
-      className={
-        "rounded-3xl border border-white/10 bg-white/[0.025] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors duration-300 hover:border-white/15 sm:p-7 " +
-        className
-      }
-    >
+    <span className={`inline-flex h-5 w-5 items-center justify-center text-[var(--color-accent)] ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+const icons = {
+  shield: (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+      <path d="M12 3 5 6v6c0 4.3 2.7 7.9 7 9 4.3-1.1 7-4.7 7-9V6l-7-3Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="m9.5 12 1.8 1.8 3.2-3.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  cloud: (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+      <path d="M7.5 18a4.5 4.5 0 1 1 .9-8.9 5.4 5.4 0 0 1 10.4 2.1A3.8 3.8 0 1 1 19 18H7.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  target: (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M12 2v2M12 20v2M2 12h2M20 12h2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  ),
+  lock: (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+      <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M8.5 10V8a3.5 3.5 0 1 1 7 0v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  ),
+  search: (
+    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+      <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.8" />
+      <path d="m20 20-4.2-4.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  ),
+};
+
+function Section({ title, subtitle, icon, children, className = "" }) {
+  return (
+    <section className={`rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--color-border-strong)] sm:p-7 ${className}`}>
       <div className="mb-5 space-y-1">
-        <h2 className="text-lg font-semibold tracking-tight text-white sm:text-xl">{title}</h2>
-        {subtitle && <p className="text-sm text-white/60">{subtitle}</p>}
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-[var(--color-text)] sm:text-xl">
+          {icon}
+          {title}
+        </h2>
+        {subtitle && <p className="text-sm text-[var(--color-text-muted)]">{subtitle}</p>}
       </div>
       {children}
     </section>
@@ -33,20 +72,16 @@ function Section({ title, subtitle, children, className = "" }) {
 }
 
 function Pill({ children }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-xs font-medium text-white/75 transition-all duration-300 hover:border-blue-200/30 hover:bg-blue-200/10 hover:text-white">
-      {children}
-    </span>
-  );
+  return <span className="inline-flex items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-soft)] transition-all duration-300 hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-text)]">{children}</span>;
 }
 
 function LinkButton({ href, children, primary = false, download = false }) {
   return (
     <a
-      className={`inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/40 ${
+      className={`inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/40 ${
         primary
-          ? "border-blue-300/45 bg-blue-300/15 text-white hover:border-blue-200/65 hover:bg-blue-300/25 hover:shadow-[0_0_24px_rgba(138,180,255,0.24)]"
-          : "border-white/15 bg-white/[0.04] text-white/90 hover:border-white/25 hover:bg-white/[0.08]"
+          ? "border-[var(--color-accent)]/70 bg-[var(--color-accent-soft)] text-[var(--color-text)] hover:bg-[var(--color-accent)]/30"
+          : "border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-soft)]"
       }`}
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
@@ -58,19 +93,30 @@ function LinkButton({ href, children, primary = false, download = false }) {
   );
 }
 
+function ThemeToggle({ theme, onToggle }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className="inline-flex items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-soft)]"
+      aria-label="Basculer le thème"
+    >
+      {theme === "dark" ? "Light" : "Dark"} mode
+    </button>
+  );
+}
+
 function ExpCard({ title, when, where, bullets }) {
   return (
-    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.03]">
+    <article className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-soft)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-white/95 sm:text-base">{title}</h3>
-          <p className="mt-1 text-xs text-white/60 sm:text-sm">{where}</p>
+          <h3 className="text-sm font-semibold text-[var(--color-text)] sm:text-base">{title}</h3>
+          <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm">{where}</p>
         </div>
-        <span className="w-fit rounded-full border border-blue-200/25 bg-blue-300/10 px-3 py-1 text-xs text-white/85">
-          {when}
-        </span>
+        <span className="w-fit rounded-full border border-[var(--color-accent)]/35 bg-[var(--color-accent-soft)] px-3 py-1 text-xs text-[var(--color-text)]">{when}</span>
       </div>
-      <ul className="mt-4 space-y-2 pl-4 text-sm leading-relaxed text-white/80 marker:text-blue-200/70">
+      <ul className="mt-4 space-y-2 pl-4 text-sm leading-relaxed text-[var(--color-text-soft)] marker:text-[var(--color-accent)]/70">
         {bullets.map((bullet, index) => (
           <li key={index} className="list-disc">
             {bullet}
@@ -83,26 +129,16 @@ function ExpCard({ title, when, where, bullets }) {
 
 function CertificationCard({ image, title, description, verificationLink }) {
   return (
-    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/45 hover:shadow-[0_0_32px_rgba(138,180,255,0.2)]">
+    <article className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-accent)]/50">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
         <div className="flex justify-center sm:justify-start">
-          <img
-            src={image}
-            alt={`${title} certification badge`}
-            className="h-[96px] w-auto object-contain sm:h-[116px]"
-            loading="lazy"
-          />
+          <img src={image} alt={`${title} certification badge`} className="h-[96px] w-auto object-contain sm:h-[116px]" loading="lazy" />
         </div>
         <div className="flex-1 space-y-3">
-          <h3 className="text-lg font-semibold tracking-tight text-white">{title}</h3>
-          <div className="h-px w-full bg-gradient-to-r from-blue-100/40 via-white/10 to-transparent" />
-          <p className="text-sm leading-relaxed text-white/70">{description}</p>
-          <a
-            href={verificationLink}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex rounded-full border border-blue-100/50 bg-blue-200/20 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-100/75 hover:bg-blue-200/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-100/45"
-          >
+          <h3 className="text-lg font-semibold tracking-tight text-[var(--color-text)]">{title}</h3>
+          <div className="h-px w-full bg-gradient-to-r from-[var(--color-accent)]/50 via-[var(--color-border)] to-transparent" />
+          <p className="text-sm leading-relaxed text-[var(--color-text-soft)]">{description}</p>
+          <a href={verificationLink} target="_blank" rel="noreferrer" className="inline-flex rounded-full border border-[var(--color-accent)]/60 bg-[var(--color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)]/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/50">
             Verify credential
           </a>
         </div>
@@ -127,18 +163,18 @@ const toolingLogos = [
   .filter((tool, index, array) => array.findIndex((item) => item.logo === tool.logo) === index);
 
 const skillTags = [
-  "Microsoft Sentinel",
-  "Microsoft Defender XDR",
-  "KQL Hunting & Investigations",
-  "MITRE ATT&CK Detection Engineering",
-  "Entra ID",
-  "Conditional Access & MFA",
-  "Defender for Cloud Apps",
-  "Defender for Cloud (CSPM)",
-  "Logic Apps / Playbooks",
-  "Tenable IO / One",
-  "ServiceNow / ITSM",
-  "PowerShell & Python",
+  { label: "Microsoft Sentinel", icon: icons.target },
+  { label: "Microsoft Defender XDR", icon: icons.shield },
+  { label: "KQL Hunting & Investigations", icon: icons.search },
+  { label: "MITRE ATT&CK Detection Engineering", icon: icons.target },
+  { label: "Entra ID", icon: icons.lock },
+  { label: "Conditional Access & MFA", icon: icons.lock },
+  { label: "Defender for Cloud Apps", icon: icons.cloud },
+  { label: "Defender for Cloud (CSPM)", icon: icons.cloud },
+  { label: "Logic Apps / Playbooks", icon: icons.cloud },
+  { label: "Tenable IO / One", icon: icons.shield },
+  { label: "ServiceNow / ITSM", icon: icons.shield },
+  { label: "PowerShell & Python", icon: icons.search },
 ];
 
 const experiences = [
@@ -209,6 +245,24 @@ export default function App() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState({ type: "idle", text: "" });
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : systemPrefersDark ? "dark" : "light";
+    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    setTheme(initialTheme || "dark");
+  }, []);
+
+  function toggleTheme() {
+    setTheme((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+      document.documentElement.classList.toggle("dark", next === "dark");
+      localStorage.setItem("theme", next);
+      return next;
+    });
+  }
 
   function onChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -246,40 +300,30 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0b0d10] text-white/90">
+    <div className="relative min-h-screen overflow-hidden bg-[var(--color-bg)] text-[var(--color-text)] transition-colors duration-300">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-28 left-[8%] h-72 w-72 rounded-full bg-blue-300/10 blur-3xl" />
-        <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-slate-200/5 blur-3xl" />
+        <div className="absolute -top-28 left-[8%] h-72 w-72 rounded-full bg-[var(--color-accent)]/15 blur-3xl" />
+        <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-[var(--color-ambient)] blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
-        <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
+        <header className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.2)] sm:p-10">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
-              <p className="text-xs uppercase tracking-[0.2em] text-blue-100/70">Portfolio · Cloud Security</p>
-              <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]">Portfolio · Cloud Security</p>
+              <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-[var(--color-text)] sm:text-5xl">
                 Alexandre Garing
-                <span className="mt-2 block text-xl font-medium text-white/80 sm:text-3xl">
-                  Microsoft Cloud Security Engineer
-                </span>
+                <span className="mt-2 block text-xl font-medium text-[var(--color-text-soft)] sm:text-3xl">Microsoft Cloud Security Engineer</span>
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base">
-                Je conçois et opère des capacités SOC, identité et réponse à incident de niveau entreprise dans l’écosystème Microsoft.
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--color-text-soft)] sm:text-base">
+                J’accompagne la sécurisation d’environnements Azure et Entra ID (Zero Trust) : gouvernance d’identité, durcissement, posture cloud, et capacité de détection/réponse avec Microsoft Sentinel et Defender XDR.
               </p>
-              <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
+              <p className="mt-2 text-sm text-[var(--color-text-muted)]">Grand Est, France · Hybride</p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.045] px-3 py-2.5 sm:gap-3 sm:px-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 sm:gap-3 sm:px-4">
                 {toolingLogos.map((tool) => (
-                  <div
-                    key={tool.name}
-                    className="group inline-flex items-center rounded-xl border border-white/20 bg-white/[0.09] px-3 py-2 transition-all duration-300 hover:scale-[1.02] hover:border-blue-100/55 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_18px_rgba(140,185,255,0.24)] sm:px-3.5"
-                  >
-                    <img
-                      src={tool.logo}
-                      alt={`${tool.name} logo`}
-                      className="h-7 w-auto object-contain sm:h-8 lg:h-10"
-                      loading="lazy"
-                    />
+                  <div key={tool.name} className="group inline-flex items-center rounded-xl border border-[var(--color-border)] bg-[var(--logo-card-bg)] px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_0_18px_rgba(140,185,255,0.18)] sm:px-3.5">
+                    <img src={tool.logo} alt={`${tool.name} logo`} className="h-7 w-auto object-contain sm:h-8 lg:h-10" loading="lazy" />
                   </div>
                 ))}
               </div>
@@ -300,6 +344,7 @@ export default function App() {
               </LinkButton>
               <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
               <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
+              <ThemeToggle theme={theme} onToggle={toggleTheme} />
               <LinkButton href="#contact" primary>
                 Contact
               </LinkButton>
@@ -308,39 +353,28 @@ export default function App() {
         </header>
 
         <main className="mt-10 grid gap-6 lg:grid-cols-12">
-          <Section title="Profil" className="lg:col-span-5">
-            <p className="text-sm leading-relaxed text-white/80 sm:text-[15px]">
-              Spécialisé en sécurité cloud Microsoft, SOC operations et engineering de détection : Sentinel SIEM, Defender XDR,
-              investigations KQL, gouvernance d’identités Entra ID et automatisation de réponse via Logic Apps/playbooks.
+          <Section title="Profil" icon={<Icon>{icons.shield}</Icon>} className="lg:col-span-5">
+            <p className="text-sm leading-relaxed text-[var(--color-text-soft)] sm:text-[15px]">
+              Spécialisé en sécurité Microsoft cloud (Azure & Entra ID), j’interviens sur la sécurisation globale des environnements : gouvernance des identités, durcissement des ressources, posture de sécurité cloud, protection des workloads et mise en place des capacités de détection et réponse avec Microsoft Defender et Sentinel. Certifié AZ-500 et SC-200, actuellement en préparation de la SC-100.
             </p>
           </Section>
 
-          <Section title="Compétences clés" subtitle="Stack sécurité & opérations" className="lg:col-span-7">
+          <Section title="Compétences clés" icon={<Icon>{icons.cloud}</Icon>} subtitle="Stack sécurité & opérations" className="lg:col-span-7">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {skillTags.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/80 transition-all duration-300 hover:border-blue-200/30 hover:bg-blue-200/10 hover:text-white"
-                >
-                  {skill}
+                <span key={skill.label} className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text-soft)] transition-all duration-300 hover:border-[var(--color-accent)]/45 hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-text)]">
+                  <Icon className="h-4 w-4">{skill.icon}</Icon>
+                  {skill.label}
                 </span>
               ))}
             </div>
           </Section>
 
-          <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
-            <div className="mb-6 flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 sm:gap-4 sm:p-4">
+          <Section title="Expériences" icon={<Icon>{icons.target}</Icon>} subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 sm:gap-4 sm:p-4">
               {experienceCompanies.map((company) => (
-                <div
-                  key={company.name}
-                  className="flex h-[84px] min-w-[170px] items-center justify-center rounded-xl border border-white/20 bg-white/[0.08] px-4 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-100/45 hover:bg-white/[0.12] hover:brightness-110 hover:shadow-[0_0_24px_rgba(148,189,255,0.2)] sm:min-w-[190px]"
-                >
-                  <img
-                    src={company.logo}
-                    alt={`${company.name} logo`}
-                    className="h-10 w-auto max-w-[160px] object-contain sm:h-11 md:h-12"
-                    loading="lazy"
-                  />
+                <div key={company.name} className="flex h-[84px] min-w-[170px] items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--logo-card-bg)] px-4 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_0_24px_rgba(148,189,255,0.18)] sm:min-w-[190px]">
+                  <img src={company.logo} alt={`${company.name} logo`} className="h-10 w-auto max-w-[160px] object-contain sm:h-11 md:h-12" loading="lazy" />
                 </div>
               ))}
             </div>
@@ -352,22 +386,16 @@ export default function App() {
           </Section>
 
           <Section title="Formations" subtitle="Parcours académique" className="lg:col-span-6">
-            <ul className="space-y-3 text-sm text-white/80">
-              <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                Mastère Expert ASR &amp; Sécurité Informatique — Metz Numeric School (oct. 2025 → sept. 2027)
-              </li>
-              <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                Bachelor Réseaux &amp; Cybersécurité (TSSR) — Metz Numeric School (2024 → sept. 2025)
-              </li>
-              <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                Licence Pro AQI &amp; BTS Contrôle industriel / régulation — Metz (2013 → 2016)
-              </li>
+            <ul className="space-y-3 text-sm text-[var(--color-text-soft)]">
+              <li className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">Mastère Expert ASR &amp; Sécurité Informatique — Metz Numeric School (oct. 2025 → sept. 2027)</li>
+              <li className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">Bachelor Réseaux &amp; Cybersécurité (TSSR) — Metz Numeric School (2024 → sept. 2025)</li>
+              <li className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">Licence Pro AQI &amp; BTS Contrôle industriel / régulation — Metz (2013 → 2016)</li>
             </ul>
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3">
-              <img src={schoolLogo} alt="Metz Numeric School logo" className="h-9 w-9 rounded-md object-cover opacity-90" loading="lazy" />
+            <div className="mt-4 flex items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3">
+              <img src={schoolLogo} alt="Metz Numeric School logo" className="h-9 w-9 rounded-md object-cover opacity-95" loading="lazy" />
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-white/50">Education</p>
-                <p className="text-sm text-white/80">Metz Numeric School — Cybersecurity track</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-[var(--color-text-muted)]">Education</p>
+                <p className="text-sm text-[var(--color-text-soft)]">Metz Numeric School — Cybersecurity track</p>
               </div>
             </div>
           </Section>
@@ -381,7 +409,7 @@ export default function App() {
           </Section>
 
           <Section title="Langues & intérêts" className="lg:col-span-5">
-            <ul className="space-y-2 text-sm text-white/80">
+            <ul className="space-y-2 text-sm text-[var(--color-text-soft)]">
               <li>Français (natif), Anglais (C1), Allemand (B2)</li>
               <li>Centres d’intérêt : cybersécurité, moto/auto, horlogerie, VTT, fitness</li>
             </ul>
@@ -391,64 +419,35 @@ export default function App() {
             <div id="contact">
               <form onSubmit={onSubmit} className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <label className="text-xs font-medium text-white/70">
+                  <label className="text-xs font-medium text-[var(--color-text-muted)]">
                     Nom
-                    <input
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-300 focus:border-blue-200/45 focus:bg-black/35 focus:ring-2 focus:ring-blue-200/15"
-                      name="name"
-                      value={form.name}
-                      onChange={onChange}
-                      placeholder="Votre nom"
-                      autoComplete="name"
-                    />
+                    <input className="mt-1.5 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-input-bg)] px-3.5 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] outline-none transition-all duration-300 focus:border-[var(--color-accent)]/60 focus:ring-2 focus:ring-[var(--color-accent)]/20" name="name" value={form.name} onChange={onChange} placeholder="Votre nom" autoComplete="name" />
                   </label>
 
-                  <label className="text-xs font-medium text-white/70">
+                  <label className="text-xs font-medium text-[var(--color-text-muted)]">
                     Email
-                    <input
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-300 focus:border-blue-200/45 focus:bg-black/35 focus:ring-2 focus:ring-blue-200/15"
-                      name="email"
-                      value={form.email}
-                      onChange={onChange}
-                      placeholder="votre@email.com"
-                      autoComplete="email"
-                    />
+                    <input className="mt-1.5 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-input-bg)] px-3.5 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] outline-none transition-all duration-300 focus:border-[var(--color-accent)]/60 focus:ring-2 focus:ring-[var(--color-accent)]/20" name="email" value={form.email} onChange={onChange} placeholder="votre@email.com" autoComplete="email" />
                   </label>
                 </div>
 
-                <label className="block text-xs font-medium text-white/70">
+                <label className="block text-xs font-medium text-[var(--color-text-muted)]">
                   Message
-                  <textarea
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-300 focus:border-blue-200/45 focus:bg-black/35 focus:ring-2 focus:ring-blue-200/15"
-                    name="message"
-                    value={form.message}
-                    onChange={onChange}
-                    placeholder="Votre message…"
-                    rows={5}
-                  />
+                  <textarea className="mt-1.5 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-input-bg)] px-3.5 py-2.5 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] outline-none transition-all duration-300 focus:border-[var(--color-accent)]/60 focus:ring-2 focus:ring-[var(--color-accent)]/20" name="message" value={form.message} onChange={onChange} placeholder="Votre message…" rows={5} />
                 </label>
 
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <button
-                    className="rounded-full border border-blue-200/40 bg-blue-300/15 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-200/55 hover:bg-blue-300/25 hover:shadow-[0_0_28px_rgba(138,180,255,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={loading}
-                    type="submit"
-                  >
+                  <button className="rounded-full border border-[var(--color-accent)]/45 bg-[var(--color-accent-soft)] px-5 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-accent)]/70 hover:bg-[var(--color-accent)]/25 disabled:cursor-not-allowed disabled:opacity-60" disabled={loading} type="submit">
                     {loading ? "Envoi..." : "Envoyer"}
                   </button>
 
-                  {status.type !== "idle" && (
-                    <p className={status.type === "success" ? "text-xs text-emerald-200/90" : "text-xs text-rose-200/90"}>
-                      {status.text}
-                    </p>
-                  )}
+                  {status.type !== "idle" && <p className={status.type === "success" ? "text-xs text-emerald-500" : "text-xs text-rose-500"}>{status.text}</p>}
                 </div>
               </form>
             </div>
           </Section>
         </main>
 
-        <footer className="mt-8 text-center text-xs text-white/45">© {year} Alexandre Garing</footer>
+        <footer className="mt-8 text-center text-xs text-[var(--color-text-muted)]">© {year} Alexandre Garing</footer>
       </div>
     </div>
   );
