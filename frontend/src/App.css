@@ -1,0 +1,70 @@
+/* amélioration générale */
+.page {
+  max-width: 1020px;
+}
+
+/* header plus propre */
+.header {
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(10px);
+  background: rgba(18, 18, 18, 0.75);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 18px 18px;
+  margin-bottom: 18px;
+}
+
+.links {
+  gap: 10px;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.04);
+  font-weight: 600;
+}
+
+.links a:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.grid {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  /* pour que "Expériences" prenne la largeur */
+  .grid > .card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}
+
+.card {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.xp {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+
+.xp h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.meta {
+  opacity: 0.75;
+  margin: 6px 0 0;
+}
