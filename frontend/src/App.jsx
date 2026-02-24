@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import microsoftLogo from "./assets/Logo-microsoft.png";
+import sentinelLogo from "./assets/Microsoft_Sentinel.png";
+import schoolLogo from "./assets/logo-ecole-mns.png";
+import az500Badge from "./assets/azure-security-engineer-associate.png";
+import sc200Badge from "./assets/security-operations-analyst-associate.png";
+import cvPdf from "./assets/CV_2025-11-23_Alexandre_Garing.pdf";
 
 function Section({ title, subtitle, children, className = "" }) {
   return (
@@ -67,6 +73,24 @@ function ExpCard({ title, when, where, bullets }) {
   );
 }
 
+function CertificationCard({ image, title, description, verificationLink }) {
+  return (
+    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/40 hover:shadow-[0_0_35px_rgba(138,180,255,0.18)]">
+      <img src={image} alt={`${title} certification badge`} className="h-16 w-16 rounded-lg object-cover" loading="lazy" />
+      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
+      <p className="mt-1 text-sm text-white/70">{description}</p>
+      <a
+        href={verificationLink}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-4 inline-flex rounded-full border border-blue-200/35 bg-blue-300/10 px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-200/60 hover:bg-blue-300/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/45"
+      >
+        Verify credential
+      </a>
+    </article>
+  );
+}
+
 const skillTags = [
   "Microsoft Sentinel",
   "Microsoft Defender XDR",
@@ -125,6 +149,23 @@ const experiences = [
       "Référent qualité équipements et suivi métrologie.",
       "Mesures matériaux : métallographie, SEM, dureté, dilatométrie et essais thermiques.",
     ],
+  },
+];
+
+const certifications = [
+  {
+    image: sc200Badge,
+    title: "SC-200 — Microsoft Security Operations Analyst",
+    description: "Threat detection, incident response and investigation across Microsoft security tooling.",
+    verificationLink:
+      "https://learn.microsoft.com/api/credentials/share/fr-fr/agaring/64CCC64B28CE2034?sharingId=4E3CE5C8334C64D1",
+  },
+  {
+    image: az500Badge,
+    title: "AZ-500 — Microsoft Azure Security Engineer",
+    description: "Cloud security architecture, identity protection and governance for Azure workloads.",
+    verificationLink:
+      "https://learn.microsoft.com/api/credentials/share/fr-fr/agaring/766EB8CD7C70FD46?sharingId=4E3CE5C8334C64D1",
   },
 ];
 
@@ -192,6 +233,12 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
+              <div className="mt-4 flex items-center gap-3">
+                <img src={microsoftLogo} alt="Microsoft logo" className="h-5 w-auto opacity-80" loading="lazy" />
+                <span className="text-white/35">•</span>
+                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="h-5 w-auto opacity-80" loading="lazy" />
+              </div>
+
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Pill>Microsoft Sentinel</Pill>
                 <Pill>Defender XDR</Pill>
@@ -203,6 +250,7 @@ export default function App() {
             </div>
 
             <nav className="flex flex-wrap gap-2 self-start lg:justify-end">
+              <LinkButton href={cvPdf}>Download CV (PDF)</LinkButton>
               <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
               <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
               <LinkButton href="#contact" primary>
@@ -212,7 +260,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="mt-6 grid gap-4 lg:grid-cols-12">
+        <main className="mt-8 grid gap-5 lg:grid-cols-12">
           <Section title="Profil" className="lg:col-span-5">
             <p className="text-sm leading-relaxed text-white/80 sm:text-[15px]">
               Spécialisé en sécurité cloud Microsoft, SOC operations et engineering de détection : Sentinel SIEM, Defender XDR,
@@ -241,7 +289,7 @@ export default function App() {
             </div>
           </Section>
 
-          <Section title="Formations" className="lg:col-span-6">
+          <Section title="Formations" subtitle="Parcours académique" className="lg:col-span-6">
             <ul className="space-y-3 text-sm text-white/80">
               <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
                 Mastère Expert ASR &amp; Sécurité Informatique — Metz Numeric School (oct. 2025 → sept. 2027)
@@ -253,22 +301,25 @@ export default function App() {
                 Licence Pro AQI &amp; BTS Contrôle industriel / régulation — Metz (2013 → 2016)
               </li>
             </ul>
+            <div className="mt-4 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3">
+              <img src={schoolLogo} alt="Metz Numeric School logo" className="h-9 w-9 rounded-md object-cover opacity-90" loading="lazy" />
+              <div>
+                <p className="text-xs uppercase tracking-[0.16em] text-white/50">Education</p>
+                <p className="text-sm text-white/80">Metz Numeric School — Cybersecurity track</p>
+              </div>
+            </div>
           </Section>
 
-          <Section title="Certifications" className="lg:col-span-6">
-            <ul className="grid gap-2 text-sm text-white/80 sm:grid-cols-2">
-              {[
-                "AZ-500 — Microsoft Azure Security Engineer",
-                "SC-200 — Microsoft Security Operations Analyst",
-                "HTB CPTS (en cours)",
-                "AWS Academy Cloud Foundations",
-                "MOOC ANSSI / RGPD (CNIL)",
-              ].map((item) => (
-                <li key={item} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
-                  {item}
-                </li>
+          <Section
+            title="Certifications"
+            subtitle="Validated Microsoft credentials"
+            className="lg:col-span-6"
+          >
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+              {certifications.map((certification) => (
+                <CertificationCard key={certification.title} {...certification} />
               ))}
-            </ul>
+            </div>
           </Section>
 
           <Section title="Langues & intérêts" className="lg:col-span-5">
