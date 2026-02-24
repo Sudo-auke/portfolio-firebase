@@ -2,6 +2,9 @@ import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import sentinelLogo from "./assets/Microsoft_Sentinel.png";
+import entraIdLogo from "./assets/Microsoft_Entra_ID_color_icon.svg.png";
+import defenderLogo from "./assets/Microsoft_Defender_2020_Fluent_Design_icon.svg.png";
+import azureLogo from "./assets/Microsoft-Azure.png";
 import schoolLogo from "./assets/logo-ecole-mns.png";
 import az500Badge from "./assets/azure-security-engineer-associate.png";
 import sc200Badge from "./assets/security-operations-analyst-associate.png";
@@ -35,7 +38,7 @@ function Pill({ children }) {
   );
 }
 
-function LinkButton({ href, children, primary = false }) {
+function LinkButton({ href, children, primary = false, download = false }) {
   return (
     <a
       className={`inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/40 ${
@@ -46,6 +49,7 @@ function LinkButton({ href, children, primary = false }) {
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noreferrer" : undefined}
+      download={download ? "Alexandre_Garing_CV.pdf" : undefined}
     >
       {children}
     </a>
@@ -83,7 +87,7 @@ function CertificationCard({ image, title, description, verificationLink }) {
           <img
             src={image}
             alt={`${title} certification badge`}
-            className="h-20 w-auto object-contain sm:h-24 lg:h-28"
+            className="h-[74px] w-auto object-contain sm:h-[92px]"
             loading="lazy"
           />
         </div>
@@ -109,6 +113,13 @@ const experienceCompanies = [
   { name: "AirCloud", logo: aircloudLogo },
   { name: "INEOS Automotive", logo: ineosLogo },
   { name: "ArcelorMittal", logo: arcelorMittalLogo },
+];
+
+const toolingLogos = [
+  { name: "Microsoft Sentinel", logo: sentinelLogo },
+  { name: "Microsoft Entra ID", logo: entraIdLogo },
+  { name: "Microsoft Defender", logo: defenderLogo },
+  { name: "Microsoft Azure", logo: azureLogo },
 ];
 
 const skillTags = [
@@ -253,14 +264,20 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
-              <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">
-                <img
-                  src={sentinelLogo}
-                  alt="Microsoft Sentinel logo"
-                  className="h-8 w-auto object-contain sm:h-9 lg:h-11"
-                  loading="lazy"
-                />
-                <span className="text-xs font-medium text-white/75 sm:text-sm">Microsoft Sentinel</span>
+              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5 sm:gap-3 sm:px-4">
+                {toolingLogos.map((tool) => (
+                  <div
+                    key={tool.name}
+                    className="inline-flex items-center rounded-xl border border-white/10 bg-white/[0.03] px-2.5 py-1.5 sm:px-3"
+                  >
+                    <img
+                      src={tool.logo}
+                      alt={`${tool.name} logo`}
+                      className="h-6 w-auto object-contain sm:h-7 lg:h-8"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2.5">
@@ -274,7 +291,9 @@ export default function App() {
             </div>
 
             <nav className="flex flex-wrap gap-2 self-start lg:justify-end">
-              <LinkButton href={cvPdf}>Download CV (PDF)</LinkButton>
+              <LinkButton href={cvPdf} download>
+                Download CV (PDF)
+              </LinkButton>
               <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
               <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
               <LinkButton href="#contact" primary>
@@ -306,16 +325,16 @@ export default function App() {
           </Section>
 
           <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
-            <div className="mb-6 flex flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.015] p-4 sm:justify-start sm:gap-5">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 sm:justify-start sm:gap-4 sm:p-4">
               {experienceCompanies.map((company) => (
                 <div
                   key={company.name}
-                  className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 opacity-90 transition-all duration-300 hover:opacity-100 hover:border-blue-100/35 hover:shadow-[0_0_20px_rgba(148,189,255,0.2)]"
+                  className="flex h-[64px] items-center rounded-xl border border-white/15 bg-white/[0.07] px-3 py-2 transition-all duration-300 hover:scale-[1.02] hover:border-blue-100/40 hover:bg-white/[0.1] hover:shadow-[0_0_20px_rgba(148,189,255,0.18)] sm:h-[72px] sm:px-4"
                 >
                   <img
                     src={company.logo}
                     alt={`${company.name} logo`}
-                    className="h-10 w-auto object-contain sm:h-12"
+                    className="h-8 w-[120px] object-contain sm:h-11 sm:w-[150px]"
                     loading="lazy"
                   />
                 </div>
