@@ -1,8 +1,6 @@
 import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import sentinelLogo from "./assets/Microsoft_Sentinel.png";
-import entraIdLogo from "./assets/Microsoft_Entra_ID_color_icon.svg.png";
 import schoolLogo from "./assets/logo-ecole-mns.png";
 import az500Badge from "./assets/azure-security-engineer-associate.png";
 import sc200Badge from "./assets/security-operations-analyst-associate.png";
@@ -11,8 +9,11 @@ import arcelorMittalLogo from "./assets/arcelormittal-removebg-preview.png";
 import ineosLogo from "./assets/ineosauto-removebg-preview.png";
 import cvPdf from "./assets/CV_2025-11-23_Alexandre_Garing.pdf";
 
-const defenderLogo = sentinelLogo;
-const azureLogo = entraIdLogo;
+const assetModules = import.meta.glob("./assets/*", { eager: true, import: "default" });
+
+function getAsset(fileName) {
+  return assetModules[`./assets/${fileName}`] ?? null;
+}
 
 function Section({ title, subtitle, children, className = "" }) {
   return (
@@ -44,7 +45,7 @@ function LinkButton({ href, children, primary = false, download = false }) {
     <a
       className={`inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/40 ${
         primary
-          ? "border-blue-200/40 bg-blue-300/15 text-white hover:border-blue-200/60 hover:bg-blue-300/25 hover:shadow-[0_0_30px_rgba(138,180,255,0.2)]"
+          ? "border-blue-300/45 bg-blue-300/15 text-white hover:border-blue-200/65 hover:bg-blue-300/25 hover:shadow-[0_0_24px_rgba(138,180,255,0.24)]"
           : "border-white/15 bg-white/[0.04] text-white/90 hover:border-white/25 hover:bg-white/[0.08]"
       }`}
       href={href}
@@ -82,13 +83,13 @@ function ExpCard({ title, when, where, bullets }) {
 
 function CertificationCard({ image, title, description, verificationLink }) {
   return (
-    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/45 hover:shadow-[0_0_36px_rgba(138,180,255,0.2)]">
+    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/45 hover:shadow-[0_0_32px_rgba(138,180,255,0.2)]">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
         <div className="flex justify-center sm:justify-start">
           <img
             src={image}
             alt={`${title} certification badge`}
-            className="h-[84px] w-auto object-contain sm:h-[106px]"
+            className="h-[96px] w-auto object-contain sm:h-[116px]"
             loading="lazy"
           />
         </div>
@@ -117,11 +118,13 @@ const experienceCompanies = [
 ];
 
 const toolingLogos = [
-  { name: "Microsoft Sentinel", logo: sentinelLogo },
-  { name: "Microsoft Entra ID", logo: entraIdLogo },
-  { name: "Microsoft Defender", logo: defenderLogo },
-  { name: "Microsoft Azure", logo: azureLogo },
-];
+  { name: "Microsoft Sentinel", logo: getAsset("Microsoft_Sentinel.png") },
+  { name: "Microsoft Entra ID", logo: getAsset("Microsoft_Entra_ID_color_icon.svg.png") },
+  { name: "Microsoft Azure", logo: getAsset("Microsoft-Azure.png") },
+  { name: "Microsoft Defender", logo: getAsset("Microsoft_Defender_2020_Fluent_Design_icon.svg.png") },
+]
+  .filter((tool) => Boolean(tool.logo))
+  .filter((tool, index, array) => array.findIndex((item) => item.logo === tool.logo) === index);
 
 const skillTags = [
   "Microsoft Sentinel",
@@ -249,9 +252,9 @@ export default function App() {
         <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-slate-200/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6">
+      <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs uppercase tracking-[0.2em] text-blue-100/70">Portfolio · Cloud Security</p>
               <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
@@ -260,8 +263,8 @@ export default function App() {
                   Microsoft Cloud Security Engineer
                 </span>
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
-                I design and operate enterprise-grade detection, response, and identity security across the Microsoft ecosystem.
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base">
+                Je conçois et opère des capacités SOC, identité et réponse à incident de niveau entreprise dans l’écosystème Microsoft.
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
@@ -269,19 +272,19 @@ export default function App() {
                 {toolingLogos.map((tool) => (
                   <div
                     key={tool.name}
-                    className="group inline-flex items-center rounded-xl border border-white/20 bg-white/[0.09] px-3 py-2 transition-all duration-300 hover:scale-105 hover:border-blue-100/55 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_20px_rgba(140,185,255,0.24)] sm:px-3.5"
+                    className="group inline-flex items-center rounded-xl border border-white/20 bg-white/[0.09] px-3 py-2 transition-all duration-300 hover:scale-[1.02] hover:border-blue-100/55 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_18px_rgba(140,185,255,0.24)] sm:px-3.5"
                   >
                     <img
                       src={tool.logo}
                       alt={`${tool.name} logo`}
-                      className="h-8 w-auto object-contain sm:h-9 lg:h-10"
+                      className="h-7 w-auto object-contain sm:h-8 lg:h-10"
                       loading="lazy"
                     />
                   </div>
                 ))}
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-2.5">
+              <div className="mt-5 flex flex-wrap gap-2.5">
                 <Pill>Microsoft Sentinel</Pill>
                 <Pill>Defender XDR</Pill>
                 <Pill>Entra ID</Pill>
@@ -304,7 +307,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="mt-12 grid gap-6 lg:grid-cols-12">
+        <main className="mt-10 grid gap-6 lg:grid-cols-12">
           <Section title="Profil" className="lg:col-span-5">
             <p className="text-sm leading-relaxed text-white/80 sm:text-[15px]">
               Spécialisé en sécurité cloud Microsoft, SOC operations et engineering de détection : Sentinel SIEM, Defender XDR,
@@ -330,12 +333,12 @@ export default function App() {
               {experienceCompanies.map((company) => (
                 <div
                   key={company.name}
-                  className="flex h-[70px] items-center rounded-xl border border-white/20 bg-white/[0.1] px-3 py-2 opacity-95 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-100/50 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_24px_rgba(148,189,255,0.24)] sm:h-[78px] sm:px-4"
+                  className="flex h-[84px] min-w-[170px] items-center justify-center rounded-xl border border-white/20 bg-white/[0.08] px-4 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-100/45 hover:bg-white/[0.12] hover:brightness-110 hover:shadow-[0_0_24px_rgba(148,189,255,0.2)] sm:min-w-[190px]"
                 >
                   <img
                     src={company.logo}
                     alt={`${company.name} logo`}
-                    className="h-9 w-[130px] object-contain sm:h-10 sm:w-[160px]"
+                    className="h-10 w-auto max-w-[160px] object-contain sm:h-11 md:h-12"
                     loading="lazy"
                   />
                 </div>
