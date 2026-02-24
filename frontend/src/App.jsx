@@ -2,17 +2,17 @@ import { useMemo, useState } from "react";
 import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
-function Section({ title, children, className = "" }) {
+function Section({ title, subtitle, children, className = "" }) {
   return (
     <section
       className={
-        "rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_20px_60px_rgba(0,0,0,0.35)] " +
-        "p-5 sm:p-6 " +
+        "rounded-3xl border border-white/10 bg-white/[0.025] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors duration-300 hover:border-white/15 sm:p-7 " +
         className
       }
     >
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 className="text-base font-semibold tracking-tight text-white/90">{title}</h2>
+      <div className="mb-5 space-y-1">
+        <h2 className="text-lg font-semibold tracking-tight text-white sm:text-xl">{title}</h2>
+        {subtitle && <p className="text-sm text-white/60">{subtitle}</p>}
       </div>
       {children}
     </section>
@@ -21,30 +21,112 @@ function Section({ title, children, className = "" }) {
 
 function Pill({ children }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-white/70">
+    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-xs font-medium text-white/75 transition-all duration-300 hover:border-blue-200/30 hover:bg-blue-200/10 hover:text-white">
       {children}
     </span>
   );
 }
 
+function LinkButton({ href, children, primary = false }) {
+  return (
+    <a
+      className={`inline-flex items-center justify-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200/40 ${
+        primary
+          ? "border-blue-200/40 bg-blue-300/15 text-white hover:border-blue-200/60 hover:bg-blue-300/25 hover:shadow-[0_0_30px_rgba(138,180,255,0.2)]"
+          : "border-white/15 bg-white/[0.04] text-white/90 hover:border-white/25 hover:bg-white/[0.08]"
+      }`}
+      href={href}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel={href.startsWith("http") ? "noreferrer" : undefined}
+    >
+      {children}
+    </a>
+  );
+}
+
 function ExpCard({ title, when, where, bullets }) {
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <h3 className="text-sm font-semibold text-white/90">{title}</h3>
-        <span className="rounded-full border border-blue-300/20 bg-blue-300/10 px-3 py-1 text-xs text-white/80">
+    <article className="group rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.03]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h3 className="text-sm font-semibold text-white/95 sm:text-base">{title}</h3>
+          <p className="mt-1 text-xs text-white/60 sm:text-sm">{where}</p>
+        </div>
+        <span className="w-fit rounded-full border border-blue-200/25 bg-blue-300/10 px-3 py-1 text-xs text-white/85">
           {when}
         </span>
       </div>
-      <p className="mt-1 text-xs text-white/60">{where}</p>
-      <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-white/80 marker:text-blue-200/70">
-        {bullets.map((b, i) => (
-          <li key={i}>{b}</li>
+      <ul className="mt-4 space-y-2 pl-4 text-sm leading-relaxed text-white/80 marker:text-blue-200/70">
+        {bullets.map((bullet, index) => (
+          <li key={index} className="list-disc">
+            {bullet}
+          </li>
         ))}
       </ul>
     </article>
   );
 }
+
+const skillTags = [
+  "Microsoft Sentinel",
+  "Microsoft Defender XDR",
+  "KQL Hunting & Investigations",
+  "MITRE ATT&CK Detection Engineering",
+  "Entra ID",
+  "Conditional Access & MFA",
+  "Defender for Cloud Apps",
+  "Defender for Cloud (CSPM)",
+  "Logic Apps / Playbooks",
+  "Tenable IO / One",
+  "ServiceNow / ITSM",
+  "PowerShell & Python",
+];
+
+const experiences = [
+  {
+    title: "Air Cloud — Cloud Security Engineer (alternance)",
+    when: "oct. 2025 → aujourd’hui",
+    where: "Grand Est (Hybride)",
+    bullets: [
+      "Déploiement Microsoft Sentinel : ingestion, analytics rules et automatisation Logic Apps/playbooks.",
+      "Investigations KQL, hunting ciblé et amélioration continue de la détection alignée MITRE ATT&CK.",
+      "Supervision Microsoft 365 Defender XDR sur les signaux identité, endpoint, email et cloud.",
+      "Gouvernance Entra ID : MFA, Conditional Access et analyse des authentifications sensibles.",
+      "Durcissement de posture via Defender for Cloud Apps et Defender for Cloud (CSPM).",
+    ],
+  },
+  {
+    title: "INEOS Automotive — IT Security Analyst (alternance)",
+    when: "oct. 2024 → nov. 2025",
+    where: "Hambach (Grand Est)",
+    bullets: [
+      "Vulnerability management avec Tenable IO/One : priorisation, coordination patching et suivi VRB.",
+      "Opérations SOC : alerting Taegis XDR, investigations et support niveau 1.5/2.",
+      "Réponse EDR Carbon Black : quarantaine, scans et remote response.",
+      "Déploiement et supervision Cisco Umbrella pour le DNS filtering.",
+      "Préparation NIS2, participation CAB et actions de sensibilisation sécurité internes.",
+    ],
+  },
+  {
+    title: "Technology & Strategy (Bosch) — Validation & Verification / Test Engineer",
+    when: "juin 2022 → mai 2024",
+    where: "Stuttgart (DE)",
+    bullets: [
+      "Lead technique sur activités de validation ADAS / ParkPilot.",
+      "Mesure et analyse via CANape, CANoe et CANalyzer.",
+      "Tests piste/route, mentorat et montée en compétence de l’équipe.",
+    ],
+  },
+  {
+    title: "ArcelorMittal — Technicien mesures physiques / R&D",
+    when: "2017 → 2022",
+    where: "Maizières-lès-Metz",
+    bullets: [
+      "Référent qualité équipements et suivi métrologie.",
+      "Mesures matériaux : métallographie, SEM, dureté, dilatométrie et essais thermiques.",
+    ],
+  },
+];
 
 export default function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
@@ -88,21 +170,29 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0d10] text-white/90">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        {/* HERO */}
-        <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.03] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-8">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl">
-                Alexandre Garing
-              </h1>
-              <p className="mt-2 text-sm text-white/80 sm:text-base">
-                Cloud Security Engineer — Microsoft (SOC / XDR)
-              </p>
-              <p className="mt-1 text-sm text-white/60">Grand Est, France · Hybride</p>
+    <div className="relative min-h-screen overflow-hidden bg-[#0b0d10] text-white/90">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-28 left-[8%] h-72 w-72 rounded-full bg-blue-300/10 blur-3xl" />
+        <div className="absolute right-[5%] top-[18%] h-80 w-80 rounded-full bg-slate-200/5 blur-3xl" />
+      </div>
 
-              <div className="mt-5 flex flex-wrap gap-2">
+      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+        <header className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-white/[0.02] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.45)] sm:p-10">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-xs uppercase tracking-[0.2em] text-blue-100/70">Portfolio · Cloud Security</p>
+              <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
+                Alexandre Garing
+                <span className="mt-2 block text-xl font-medium text-white/80 sm:text-3xl">
+                  Microsoft Cloud Security Engineer
+                </span>
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
+                I design and operate enterprise-grade detection, response, and identity security across the Microsoft ecosystem.
+              </p>
+              <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
+
+              <div className="mt-6 flex flex-wrap gap-2.5">
                 <Pill>Microsoft Sentinel</Pill>
                 <Pill>Defender XDR</Pill>
                 <Pill>Entra ID</Pill>
@@ -112,199 +202,144 @@ export default function App() {
               </div>
             </div>
 
-            <nav className="flex flex-wrap gap-2 sm:justify-end">
-              <a
-                className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/[0.08]"
-                href="https://www.linkedin.com/in/alexandre-garing/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                LinkedIn
-              </a>
-              <a
-                className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-white/90 hover:bg-white/[0.08]"
-                href="https://github.com/Sudo-auke"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
-              <a
-                className="rounded-full border border-blue-300/25 bg-blue-300/10 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-blue-300/20"
-                href="#contact"
-              >
+            <nav className="flex flex-wrap gap-2 self-start lg:justify-end">
+              <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
+              <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
+              <LinkButton href="#contact" primary>
                 Contact
-              </a>
+              </LinkButton>
             </nav>
           </div>
         </header>
 
-        {/* CONTENT GRID */}
-        <main className="mt-6 grid gap-4 lg:grid-cols-2">
-          <Section title="Profil">
-            <p className="text-sm leading-relaxed text-white/80">
-              Cloud security &amp; monitoring (Sentinel SIEM, Microsoft Defender XDR), investigations KQL,
-              amélioration de la couverture de détection (MITRE ATT&amp;CK), gouvernance d’identités (Entra ID),
-              automatisation (Logic Apps / playbooks) et posture (Defender for Cloud / CSPM).
+        <main className="mt-6 grid gap-4 lg:grid-cols-12">
+          <Section title="Profil" className="lg:col-span-5">
+            <p className="text-sm leading-relaxed text-white/80 sm:text-[15px]">
+              Spécialisé en sécurité cloud Microsoft, SOC operations et engineering de détection : Sentinel SIEM, Defender XDR,
+              investigations KQL, gouvernance d’identités Entra ID et automatisation de réponse via Logic Apps/playbooks.
             </p>
           </Section>
 
-          <Section title="Compétences clés">
-            <ul className="list-disc space-y-2 pl-5 text-sm text-white/80 marker:text-blue-200/70">
-              <li>Microsoft Sentinel : ingestion, connectors, analytics rules, UEBA, investigations KQL, hunting</li>
-              <li>Microsoft Defender XDR : triage, correlation, incidents (Identity/Endpoint/Email/Cloud Apps)</li>
-              <li>Entra ID : MFA, Conditional Access, analyse des sign-in anomalies, principes Zero Trust</li>
-              <li>Defender for Cloud Apps : shadow IT, OAuth apps, policy enforcement</li>
-              <li>Vulnérabilités : Tenable IO/One, priorisation, attack paths, suivi remédiation</li>
-              <li>ITSM / Tickets : ServiceNow, Freshservice, GLPI</li>
-              <li>Scripting : PowerShell, Python, VBA</li>
-            </ul>
-          </Section>
-
-          <Section title="Expériences" className="lg:col-span-2">
-            <div className="grid gap-3 lg:grid-cols-2">
-              <ExpCard
-                title="Air Cloud — Cloud Security Engineer (alternance)"
-                when="oct. 2025 → aujourd’hui"
-                where="Grand Est (Hybride)"
-                bullets={[
-                  "Déploiement Microsoft Sentinel : ingestion, règles, automatisation Logic Apps/playbooks",
-                  "Investigations KQL, hunting ciblé, détections alignées MITRE ATT&CK",
-                  "Supervision Microsoft 365 Defender XDR : signaux identité/endpoints/email/cloud",
-                  "Entra ID : MFA/Conditional Access, analyse événements d’authentification sensibles",
-                  "Defender for Cloud Apps + Defender for Cloud (CSPM) : gouvernance et durcissement",
-                ]}
-              />
-              <ExpCard
-                title="INEOS Automotive — IT Security Analyst (alternance)"
-                when="oct. 2024 → nov. 2025"
-                where="Hambach (Grand Est)"
-                bullets={[
-                  "Vulnerability management : Tenable IO/One, priorisation, patch coordination, VRB",
-                  "SOC : alerting Taegis XDR, investigations, support niveau 1.5/2",
-                  "Réponse EDR : Carbon Black (quarantaine, scans, remote response)",
-                  "DNS filtering : déploiement Cisco Umbrella + supervision",
-                  "Gouvernance : préparation NIS2, audits, CAB, sensibilisation & phishing internes",
-                ]}
-              />
-              <ExpCard
-                title="Technology & Strategy (Bosch) — Validation & Verification / Test Engineer"
-                when="juin 2022 → mai 2024"
-                where="Stuttgart (DE)"
-                bullets={[
-                  "Lead technique validation ADAS / ParkPilot (projet client)",
-                  "Mesures et analyse : CANape, CANoe, CANalyzer",
-                  "Tests véhicules piste/route, mentorat et formation",
-                ]}
-              />
-              <ExpCard
-                title="ArcelorMittal — Technicien mesures physiques / R&D"
-                when="2017 → 2022"
-                where="Maizières-lès-Metz"
-                bullets={[
-                  "Référent qualité équipements, suivi métrologie",
-                  "Mesures : métallographie, SEM, dureté, dilatométrie, essais thermo",
-                ]}
-              />
+          <Section title="Compétences clés" subtitle="Stack sécurité & opérations" className="lg:col-span-7">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {skillTags.map((skill) => (
+                <span
+                  key={skill}
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/80 transition-all duration-300 hover:border-blue-200/30 hover:bg-blue-200/10 hover:text-white"
+                >
+                  {skill}
+                </span>
+              ))}
             </div>
           </Section>
 
-          <Section title="Formations">
-            <ul className="list-disc space-y-2 pl-5 text-sm text-white/80 marker:text-blue-200/70">
-              <li>Mastère Expert ASR &amp; Sécurité Informatique — Metz Numeric School (oct. 2025 → sept. 2027)</li>
-              <li>Bachelor Réseaux &amp; Cybersécurité (TSSR) — Metz Numeric School (2024 → sept. 2025)</li>
-              <li>Licence Pro AQI &amp; BTS Contrôle industriel / régulation — Metz (2013 → 2016)</li>
+          <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
+            <div className="grid gap-3 md:grid-cols-2">
+              {experiences.map((experience) => (
+                <ExpCard key={experience.title} {...experience} />
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Formations" className="lg:col-span-6">
+            <ul className="space-y-3 text-sm text-white/80">
+              <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                Mastère Expert ASR &amp; Sécurité Informatique — Metz Numeric School (oct. 2025 → sept. 2027)
+              </li>
+              <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                Bachelor Réseaux &amp; Cybersécurité (TSSR) — Metz Numeric School (2024 → sept. 2025)
+              </li>
+              <li className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                Licence Pro AQI &amp; BTS Contrôle industriel / régulation — Metz (2013 → 2016)
+              </li>
             </ul>
           </Section>
 
-          <Section title="Certifications">
-            <ul className="list-disc space-y-2 pl-5 text-sm text-white/80 marker:text-blue-200/70">
-              <li>AZ-500 — Microsoft Azure Security Engineer</li>
-              <li>SC-200 — Microsoft Security Operations Analyst</li>
-              <li>HTB CPTS (en cours)</li>
-              <li>AWS Academy Cloud Foundations</li>
-              <li>MOOC ANSSI / RGPD (CNIL)</li>
+          <Section title="Certifications" className="lg:col-span-6">
+            <ul className="grid gap-2 text-sm text-white/80 sm:grid-cols-2">
+              {[
+                "AZ-500 — Microsoft Azure Security Engineer",
+                "SC-200 — Microsoft Security Operations Analyst",
+                "HTB CPTS (en cours)",
+                "AWS Academy Cloud Foundations",
+                "MOOC ANSSI / RGPD (CNIL)",
+              ].map((item) => (
+                <li key={item} className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                  {item}
+                </li>
+              ))}
             </ul>
           </Section>
 
-          <Section title="Langues & intérêts" className="lg:col-span-2">
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div>
-                <ul className="list-disc space-y-2 pl-5 text-sm text-white/80 marker:text-blue-200/70">
-                  <li>Français (natif), Anglais (C1), Allemand (B2)</li>
-                  <li>Centres d’intérêt : cybersécurité, moto/auto, horlogerie, VTT, fitness</li>
-                </ul>
-              </div>
+          <Section title="Langues & intérêts" className="lg:col-span-5">
+            <ul className="space-y-2 text-sm text-white/80">
+              <li>Français (natif), Anglais (C1), Allemand (B2)</li>
+              <li>Centres d’intérêt : cybersécurité, moto/auto, horlogerie, VTT, fitness</li>
+            </ul>
+          </Section>
 
-              <div id="contact" className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-                <h3 className="text-sm font-semibold text-white/90">Contact</h3>
-                <p className="mt-1 text-xs text-white/60">
-                  Formulaire relié à Firestore (collection <code className="rounded bg-black/20 px-1 py-0.5">contacts</code>).
-                </p>
-
-                <form onSubmit={onSubmit} className="mt-4 space-y-3">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="text-xs text-white/70">
-                      Nom
-                      <input
-                        className="mt-1 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/90 outline-none focus:border-blue-200/40 focus:ring-2 focus:ring-blue-200/10"
-                        name="name"
-                        value={form.name}
-                        onChange={onChange}
-                        placeholder="Votre nom"
-                        autoComplete="name"
-                      />
-                    </label>
-
-                    <label className="text-xs text-white/70">
-                      Email
-                      <input
-                        className="mt-1 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/90 outline-none focus:border-blue-200/40 focus:ring-2 focus:ring-blue-200/10"
-                        name="email"
-                        value={form.email}
-                        onChange={onChange}
-                        placeholder="votre@email.com"
-                        autoComplete="email"
-                      />
-                    </label>
-                  </div>
-
-                  <label className="text-xs text-white/70">
-                    Message
-                    <textarea
-                      className="mt-1 w-full rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/90 outline-none focus:border-blue-200/40 focus:ring-2 focus:ring-blue-200/10"
-                      name="message"
-                      value={form.message}
+          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7" >
+            <div id="contact">
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="text-xs font-medium text-white/70">
+                    Nom
+                    <input
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-300 focus:border-blue-200/45 focus:bg-black/35 focus:ring-2 focus:ring-blue-200/15"
+                      name="name"
+                      value={form.name}
                       onChange={onChange}
-                      placeholder="Votre message…"
-                      rows={5}
+                      placeholder="Votre nom"
+                      autoComplete="name"
                     />
                   </label>
 
-                  <div className="flex flex-wrap items-center gap-3">
-                    <button
-                      className="rounded-full border border-blue-300/25 bg-blue-300/10 px-4 py-2 text-sm font-semibold text-white/90 hover:bg-blue-300/20 disabled:opacity-60"
-                      disabled={loading}
-                      type="submit"
-                    >
-                      {loading ? "Envoi..." : "Envoyer"}
-                    </button>
+                  <label className="text-xs font-medium text-white/70">
+                    Email
+                    <input
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-300 focus:border-blue-200/45 focus:bg-black/35 focus:ring-2 focus:ring-blue-200/15"
+                      name="email"
+                      value={form.email}
+                      onChange={onChange}
+                      placeholder="votre@email.com"
+                      autoComplete="email"
+                    />
+                  </label>
+                </div>
 
-                    {status.type !== "idle" && (
-                      <p className={status.type === "success" ? "text-xs text-emerald-200/90" : "text-xs text-rose-200/90"}>
-                        {status.text}
-                      </p>
-                    )}
-                  </div>
-                </form>
-              </div>
+                <label className="block text-xs font-medium text-white/70">
+                  Message
+                  <textarea
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/25 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 outline-none transition-all duration-300 focus:border-blue-200/45 focus:bg-black/35 focus:ring-2 focus:ring-blue-200/15"
+                    name="message"
+                    value={form.message}
+                    onChange={onChange}
+                    placeholder="Votre message…"
+                    rows={5}
+                  />
+                </label>
+
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <button
+                    className="rounded-full border border-blue-200/40 bg-blue-300/15 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:border-blue-200/55 hover:bg-blue-300/25 hover:shadow-[0_0_28px_rgba(138,180,255,0.2)] disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={loading}
+                    type="submit"
+                  >
+                    {loading ? "Envoi..." : "Envoyer"}
+                  </button>
+
+                  {status.type !== "idle" && (
+                    <p className={status.type === "success" ? "text-xs text-emerald-200/90" : "text-xs text-rose-200/90"}>
+                      {status.text}
+                    </p>
+                  )}
+                </div>
+              </form>
             </div>
           </Section>
         </main>
 
-        <footer className="mt-8 text-center text-xs text-white/50">
-          © {year} Alexandre Garing
-        </footer>
+        <footer className="mt-8 text-center text-xs text-white/45">© {year} Alexandre Garing</footer>
       </div>
     </div>
   );
