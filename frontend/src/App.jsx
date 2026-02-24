@@ -3,8 +3,6 @@ import { db } from "./firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import sentinelLogo from "./assets/Microsoft_Sentinel.png";
 import entraIdLogo from "./assets/Microsoft_Entra_ID_color_icon.svg.png";
-import defenderLogo from "./assets/Microsoft_Defender_2020_Fluent_Design_icon.svg.png";
-import azureLogo from "./assets/Microsoft-Azure.png";
 import schoolLogo from "./assets/logo-ecole-mns.png";
 import az500Badge from "./assets/azure-security-engineer-associate.png";
 import sc200Badge from "./assets/security-operations-analyst-associate.png";
@@ -12,6 +10,9 @@ import aircloudLogo from "./assets/aircloud-removebg-preview.png";
 import arcelorMittalLogo from "./assets/arcelormittal-removebg-preview.png";
 import ineosLogo from "./assets/ineosauto-removebg-preview.png";
 import cvPdf from "./assets/CV_2025-11-23_Alexandre_Garing.pdf";
+
+const defenderLogo = sentinelLogo;
+const azureLogo = entraIdLogo;
 
 function Section({ title, subtitle, children, className = "" }) {
   return (
