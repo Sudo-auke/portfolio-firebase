@@ -169,6 +169,10 @@ const toolingLogos = [
   { name: "Microsoft Sentinel", logo: getAsset("Microsoft_Sentinel.png") },
   { name: "Microsoft Entra ID", logo: getAsset("Microsoft_Entra_ID_color_icon.svg.png") },
   { name: "Microsoft Azure", logo: getAsset("Microsoft-Azure.png") },
+  { name: "Tenable", logo: getAsset("tenable.png") },
+  { name: "Amazon Web Services", logo: getAsset("Amazon_Web_Services_Logo.svg.png") },
+  { name: "Google Cloud", logo: getAsset("Google-Cloud-Platform-GCP-Logo.png") },
+  { name: "Cisco", logo: getAsset("logo-cisco-removebg-preview.png") },
   { name: "Microsoft Defender", logo: getAsset("Microsoft_Defender_2020_Fluent_Design_icon.svg.png") },
 ]
   .filter((tool) => Boolean(tool.logo))
@@ -327,8 +331,12 @@ export default function App() {
 
       <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24">
         <header className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.2)] sm:p-10">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-3xl">
+          <div className="flex justify-end">
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
+          </div>
+
+          <div className="mt-5 flex flex-col gap-7">
+            <div className="max-w-4xl">
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]">Portfolio · Cloud Security</p>
               <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-[var(--color-text)] sm:text-5xl">
                 Alexandre Garing
@@ -357,8 +365,8 @@ export default function App() {
               </div>
             </div>
 
-            <nav className="self-start lg:justify-end">
-              <div className="flex flex-wrap items-center gap-2">
+            <nav className="pt-1">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
                 <LinkButton href={cvPdf} download>
                   Download CV (PDF)
                 </LinkButton>
@@ -367,9 +375,6 @@ export default function App() {
                 <LinkButton href="#contact" primary>
                   Contact
                 </LinkButton>
-
-                <div className="ml-1 h-7 w-px bg-[var(--color-border)]" aria-hidden="true" />
-                <ThemeToggle theme={theme} onToggle={toggleTheme} />
               </div>
             </nav>
           </div>
