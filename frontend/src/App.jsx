@@ -83,12 +83,13 @@ function CertificationCard({ image, title, description, verificationLink }) {
           <img
             src={image}
             alt={`${title} certification badge`}
-            className="h-16 w-auto object-contain sm:h-20 lg:h-24"
+            className="h-20 w-auto object-contain sm:h-24 lg:h-28"
             loading="lazy"
           />
         </div>
         <div className="flex-1 space-y-3">
-          <h3 className="text-base font-semibold text-white">{title}</h3>
+          <h3 className="text-lg font-semibold tracking-tight text-white">{title}</h3>
+          <div className="h-px w-full bg-gradient-to-r from-blue-100/40 via-white/10 to-transparent" />
           <p className="text-sm leading-relaxed text-white/70">{description}</p>
           <a
             href={verificationLink}
@@ -252,9 +253,16 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
-              <div className="mt-4 flex items-center gap-4">
-                <img src={sentinelLogo} alt="Microsoft Sentinel logo" className="mt-4 h-9 w-auto opacity-90 lg:h-11" loading="lazy" />
-                
+              <div className="mt-4 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2">
+                <img
+                  src={sentinelLogo}
+                  alt="Microsoft Sentinel logo"
+                  className="h-8 w-auto object-contain sm:h-9 lg:h-11"
+                  loading="lazy"
+                />
+                <span className="text-xs font-medium text-white/75 sm:text-sm">Microsoft Sentinel</span>
+              </div>
+
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Pill>Microsoft Sentinel</Pill>
                 <Pill>Defender XDR</Pill>
@@ -298,15 +306,19 @@ export default function App() {
           </Section>
 
           <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
-            <div className="mb-6 flex flex-wrap items-center justify-center gap-8 rounded-2xl border border-white/10 bg-white/[0.015] p-4 sm:justify-start">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.015] p-4 sm:justify-start sm:gap-5">
               {experienceCompanies.map((company) => (
-                <img
+                <div
                   key={company.name}
-                  src={company.logo}
-                  alt={`${company.name} logo`}
-                  className="h-9 w-auto opacity-75 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:h-10"
-                  loading="lazy"
-                />
+                  className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 opacity-90 transition-all duration-300 hover:opacity-100 hover:border-blue-100/35 hover:shadow-[0_0_20px_rgba(148,189,255,0.2)]"
+                >
+                  <img
+                    src={company.logo}
+                    alt={`${company.name} logo`}
+                    className="h-10 w-auto object-contain sm:h-12"
+                    loading="lazy"
+                  />
+                </div>
               ))}
             </div>
             <div className="grid gap-3 md:grid-cols-2">
@@ -352,7 +364,7 @@ export default function App() {
             </ul>
           </Section>
 
-          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7" >
+          <Section title="Contact" subtitle="Formulaire relié à Firestore · collection contacts" className="lg:col-span-7">
             <div id="contact">
               <form onSubmit={onSubmit} className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
