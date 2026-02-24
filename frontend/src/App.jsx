@@ -88,7 +88,7 @@ function CertificationCard({ image, title, description, verificationLink }) {
           <img
             src={image}
             alt={`${title} certification badge`}
-            className="h-[74px] w-auto object-contain sm:h-[92px]"
+            className="h-[84px] w-auto object-contain sm:h-[106px]"
             loading="lazy"
           />
         </div>
@@ -265,16 +265,16 @@ export default function App() {
               </p>
               <p className="mt-2 text-sm text-white/55">Grand Est, France · Hybride</p>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2.5 sm:gap-3 sm:px-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.045] px-3 py-2.5 sm:gap-3 sm:px-4">
                 {toolingLogos.map((tool) => (
                   <div
                     key={tool.name}
-                    className="inline-flex items-center rounded-xl border border-white/10 bg-white/[0.03] px-2.5 py-1.5 sm:px-3"
+                    className="group inline-flex items-center rounded-xl border border-white/20 bg-white/[0.09] px-3 py-2 transition-all duration-300 hover:scale-105 hover:border-blue-100/55 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_20px_rgba(140,185,255,0.24)] sm:px-3.5"
                   >
                     <img
                       src={tool.logo}
                       alt={`${tool.name} logo`}
-                      className="h-6 w-auto object-contain sm:h-7 lg:h-8"
+                      className="h-8 w-auto object-contain sm:h-9 lg:h-10"
                       loading="lazy"
                     />
                   </div>
@@ -326,16 +326,16 @@ export default function App() {
           </Section>
 
           <Section title="Expériences" subtitle="Parcours orienté sécurité opérationnelle" className="lg:col-span-12">
-            <div className="mb-6 flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 sm:justify-start sm:gap-4 sm:p-4">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 sm:gap-4 sm:p-4">
               {experienceCompanies.map((company) => (
                 <div
                   key={company.name}
-                  className="flex h-[64px] items-center rounded-xl border border-white/15 bg-white/[0.07] px-3 py-2 transition-all duration-300 hover:scale-[1.02] hover:border-blue-100/40 hover:bg-white/[0.1] hover:shadow-[0_0_20px_rgba(148,189,255,0.18)] sm:h-[72px] sm:px-4"
+                  className="flex h-[70px] items-center rounded-xl border border-white/20 bg-white/[0.1] px-3 py-2 opacity-95 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-100/50 hover:bg-white/[0.14] hover:brightness-110 hover:shadow-[0_0_24px_rgba(148,189,255,0.24)] sm:h-[78px] sm:px-4"
                 >
                   <img
                     src={company.logo}
                     alt={`${company.name} logo`}
-                    className="h-8 w-[120px] object-contain sm:h-11 sm:w-[150px]"
+                    className="h-9 w-[130px] object-contain sm:h-10 sm:w-[160px]"
                     loading="lazy"
                   />
                 </div>
