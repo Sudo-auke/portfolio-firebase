@@ -94,14 +94,26 @@ function LinkButton({ href, children, primary = false, download = false }) {
 }
 
 function ThemeToggle({ theme, onToggle }) {
+  const isDark = theme === "dark";
+
   return (
     <button
       type="button"
       onClick={onToggle}
-      className="inline-flex items-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm font-semibold text-[var(--color-text)] transition-all duration-300 hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-soft)]"
-      aria-label="Basculer le thème"
+      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-soft)] shadow-[0_2px_10px_rgba(15,23,42,0.08)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
+      aria-label={isDark ? "Activer le thème clair" : "Activer le thème sombre"}
+      aria-pressed={isDark}
     >
-      {theme === "dark" ? "Light" : "Dark"} mode
+      {isDark ? (
+        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.9" />
+          <path d="M12 2.5v2.3M12 19.2v2.3M21.5 12h-2.3M4.8 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+        </svg>
+      )}
     </button>
   );
 }
@@ -249,10 +261,17 @@ export default function App() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : systemPrefersDark ? "dark" : "light";
+    const hasSavedTheme = savedTheme === "dark" || savedTheme === "light";
+
+    let initialTheme = "dark";
+    if (hasSavedTheme) {
+      initialTheme = savedTheme;
+    } else if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
+      initialTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+
     document.documentElement.classList.toggle("dark", initialTheme === "dark");
-    setTheme(initialTheme || "dark");
+    setTheme(initialTheme);
   }, []);
 
   function toggleTheme() {
@@ -338,16 +357,20 @@ export default function App() {
               </div>
             </div>
 
-            <nav className="flex flex-wrap gap-2 self-start lg:justify-end">
-              <LinkButton href={cvPdf} download>
-                Download CV (PDF)
-              </LinkButton>
-              <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
-              <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
-              <ThemeToggle theme={theme} onToggle={toggleTheme} />
-              <LinkButton href="#contact" primary>
-                Contact
-              </LinkButton>
+            <nav className="self-start lg:justify-end">
+              <div className="flex flex-wrap items-center gap-2">
+                <LinkButton href={cvPdf} download>
+                  Download CV (PDF)
+                </LinkButton>
+                <LinkButton href="https://www.linkedin.com/in/alexandre-garing/">LinkedIn</LinkButton>
+                <LinkButton href="https://github.com/Sudo-auke">GitHub</LinkButton>
+                <LinkButton href="#contact" primary>
+                  Contact
+                </LinkButton>
+
+                <div className="ml-1 h-7 w-px bg-[var(--color-border)]" aria-hidden="true" />
+                <ThemeToggle theme={theme} onToggle={toggleTheme} />
+              </div>
             </nav>
           </div>
         </header>
